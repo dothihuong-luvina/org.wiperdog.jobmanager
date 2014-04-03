@@ -255,7 +255,9 @@ public class Activator implements BundleActivator {
 			jfactory.setWarnIfPropertyNotFound(false);
 			scheduler.setJobFactory(jfactory);
 			jf = new JobFacadeImpl(scheduler);
-			scheduler.start();
+			if(!scheduler.isStarted()) {
+				scheduler.start();
+			}
 		} catch (SchedulerException e) {
 			logger.trace("", e);
 		} catch (JobManagerException e) {

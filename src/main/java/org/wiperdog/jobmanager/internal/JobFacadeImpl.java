@@ -390,7 +390,13 @@ public class JobFacadeImpl implements JobFacade {
 				.build();
 
 		try {
-			sched.addJob(job, true);
+			if (!sched.checkExists(job.getKey())) {
+				sched.addJob(job, true);
+			}
+			if (!sched.checkExists(job.getKey())) {
+				logger.info("failed to add job:" + name);
+				throw new JobManagerException("failed to add job:" + name);
+			}
 		} catch (SchedulerException e) {
 			logger.info("failed to add job:" + name);
 			throw new JobManagerException("failed to add job:" + name, e);
@@ -710,6 +716,10 @@ public class JobFacadeImpl implements JobFacade {
 		} catch (SchedulerException e) {
 			logger.info("failed to get job:" + name);
 			throw new JobManagerException("failed to get job:" + name, e);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new JobManagerException("failed to get job:" + name, e);
+			// TODO: handle exception
 		}
 	}
 
